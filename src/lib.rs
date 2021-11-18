@@ -43,8 +43,7 @@ pub struct Image{
 impl Image {
     #[wasm_bindgen(constructor)]
     pub fn new(width: usize, height: usize, cell_size:usize) -> Image{
-        let mut cells = Vec::new();
-        cells.resize(width * height,  Rgb{r:200, g:200, b:200});
+        let cells =  vec![Rgb { r: 200, g: 200, b: 255 }; width * height];
         Image {width, height, cell_size, cells} 
     }
     pub fn width(&self) -> usize {
