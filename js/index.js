@@ -43,15 +43,31 @@ function setupCanvas(image) {
         let y = event.clientY - rect.top;
         x = Math.floor(x/cell_size);
         y = Math.floor(y/cell_size);
-        image.brush(x,y,[200,255,200]);
-        draw(image);
+        // image.brush(x,y,[200,255,200]);
+        // draw(image);
+        image.addParticle(x,y);
+        image.updateColor();
+        draw(image)
     });
+    var i = 0;
+    const counter = document.getElementById("counter");
+    var intervalId = window.setInterval(function(){
+        /// call your function here
+        ///setupCanvas(image);
+        counter.textContent = i.toString();
+        i++;
+        image.updateParticle();
+        image.updateColor();
+        draw(image);
+    }, 500);
+    
 }
 async function main(){
     const lib = await import("../pkg/index.js").catch(console.error);
     const image = new lib.Image(10,10,50);
     draw(image);
     setupCanvas(image);
+    
     
 }
 main();
