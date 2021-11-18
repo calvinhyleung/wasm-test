@@ -25,14 +25,46 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 //     Ok(())
 // }
+#[derive(Clone, Copy)]
+struct Rgb {
+    r:u8,
+    g:u8,
+    b:u8,
+}
 #[wasm_bindgen]
 pub struct Image{
-    
+    width: usize,
+    height: usize,
+    cell_size: usize,
+    cells: Vec<Rgb>,
 }
+
 #[wasm_bindgen]
 impl Image {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Image{
-        Image {} 
+    pub fn new(width: usize, height: usize, cell_size:usize) -> Image{
+        let mut cells = Vec::new();
+        cells.resize(width * height,  Rgb{r:200, g:200, b:200});
+        Image {width, height, cell_size, cells} 
+    }
+    pub fn width(&self) -> usize {
+        self.width
+    }
+    pub fn height(&self) -> usize {
+        self.height
+    }
+    pub fn cell_size(&self) -> usize {
+        self.cell_size
+    }
+    pub fn cells(&self) -> Vec<u8>{
+        self.cells
+        .iter()
+        .map(|&rgb| vec![rgb.r, rgb.g, rgb.b])
+        .collect::<Vec<Vec<u8>>>()
+        .concat()
+    }
+    pub fn brush(&mut self, x:usize, y:usize, color:Vec<u8>){
+        let index = (y*self.width)+x;
+        self.cells[index] = Rgb{r:color[0], g:color[1], b:color[2]};
     }
 }
