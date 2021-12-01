@@ -5,7 +5,7 @@ function draw(image){
     // context.fillStyle = "blue";
     // context.fillRect(0, 0, 50, 50);
 
-    context.strokeStyle = "black"
+    context.strokeStyle = "grey"
     context.lineWidth  = 1;
 
     const width = image.width();
@@ -45,8 +45,8 @@ function setupCanvas(image) {
         y = Math.floor(y/cell_size);
         // image.brush(x,y,[200,255,200]);
         // draw(image);
-        image.addParticle(x,y);
-        image.updateColor();
+        image.add_particle(x,y);
+        image.update_color();
         draw(image)
     });
     var i = 0;
@@ -56,18 +56,15 @@ function setupCanvas(image) {
         ///setupCanvas(image);
         counter.textContent = i.toString();
         i++;
-        image.updateParticle();
-        image.updateColor();
+        image.update_particle();
+        image.update_color();
         draw(image);
-    }, 500);
-    
+    }, 100);
 }
 async function main(){
     const lib = await import("../pkg/index.js").catch(console.error);
-    const image = new lib.Image(10,10,50);
+    const image = new lib.Image(50,50,10);
     draw(image);
     setupCanvas(image);
-    
-    
 }
 main();
