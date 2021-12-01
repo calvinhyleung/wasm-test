@@ -56,8 +56,8 @@ impl Particle {
     pub fn color(&self) -> Rgb {
         match self.element{
             Element::Nothing => Rgb { r: 255, g: 255, b: 255 },
-            Element::Sand => Rgb { r: 255, g: 200, b: 200 },
-            Element::Water => Rgb { r: 200, g: 200, b: 255 }, 
+            Element::Sand => Rgb { r: 204, g: 102, b: 0 },
+            Element::Water => Rgb { r: 0, g: 102, b: 204 }, 
         }
     }
 }
@@ -78,7 +78,6 @@ impl Image {
         let mut particles = vec![vec![Particle{element:Element::Nothing, x:0, y:0}; height]; width];
         for y in 0..height {
             for x in 0..width{
-                let  index = (y*width)+x;
                 particles[x][y].x = x;
                 particles[x][y].y = y;
             }
@@ -106,10 +105,15 @@ impl Image {
         let index = (y*self.width)+x;
         self.cells[index] = Rgb{r:color[0], g:color[1], b:color[2]};
     }
-    pub fn add_particle(&mut self, x:usize, y:usize){
+    pub fn add_particle(&mut self, x:usize, y:usize, input_element:&str){
         let current = self.particles[x][y];
+        let element = match input_element{
+            "sand" => Element::Sand,
+            "water" => Element::Water,
+            _ => Element::Sand,
+        };
         match current.element{
-            Element::Nothing => self.particles[x][y].element = Element::Sand,
+            Element::Nothing => self.particles[x][y].element = element,
             _ => {},
         }
     }
@@ -132,17 +136,52 @@ impl Image {
                             if let Element::Nothing = self.particles[x][y+1].element { //below 
                                 self.particles[x][y].element = Element::Nothing;
                                 self.particles[x][y+1].element = Element::Sand;
-                            } else if let Element::Nothing = self.particles[x-1][y+1].element {
-                                self.particles[x][y].element = Element::Nothing;
-                                self.particles[x-1][y+1].element = Element::Sand;
-                            } else if let Element::Nothing = self.particles[x+1][y+1].element {
-                                self.particles[x][y].element = Element::Nothing;
-                                self.particles[x+1][y+1].element = Element::Sand;
-                            }
+                            } else {
+                                if x != 0 {
+                                    if let Element::Nothing = self.particles[x-1][y+1].element {
+                                        self.particles[x][y].element = Element::Nothing;
+                                        self.particles[x-1][y+1].element = Element::Sand;
+                                    } else {
+                                        if x + 1 < self.width {
+                                            if let Element::Nothing = self.particles[x+1][y+1].element {
+                                                self.particles[x][y].element = Element::Nothing;
+                                                self.particles[x+1][y+1].element = Element::Sand;
+                                            } 
+                                        }
+                                    }
+                                }
+                            } 
                         }
                     },
                     Element::Water => {
-    
+                        if y+1 < self.height {
+                            if let Element::Nothing = self.particles[x][y+1].element { //below 
+                                self.particles[x][y].element = Element::Nothing;
+                                self.particles[x][y+1].element = Element::Water;
+                            } else {
+                                if x != 0 {
+                                    if let Element::Nothing = self.particles[x-1][y+1].element {
+                                        self.particles[x][y].element = Element::Nothing;
+                                        self.particles[x-1][y+1].element = Element::Water;
+                                    } else {
+                                        if x + 1 < self.width {
+                                            if let Element::Nothing = self.particles[x+1][y+1].element {
+                                                self.particles[x][y].element = Element::Nothing;
+                                                self.particles[x+1][y+1].element = Element::Water;
+                                            } else {
+                                                if let Element::Nothing = self.particles[x-1][y].element {
+                                                    self.particles[x][y].element = Element::Nothing;
+                                                    self.particles[x-1][y].element = Element::Water;
+                                                } else if let Element::Nothing = self.particles[x+1][y].element {
+                                                    self.particles[x][y].element = Element::Nothing;
+                                                    self.particles[x+1][y].element = Element::Water;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } 
+                        }
                     },
                 } 
             }
