@@ -172,24 +172,6 @@ impl Image {
                                     self.particles[x][y+1].element = Element::Sand;
                                 },
                             }
-                            // if let Element::Nothing = self.particles[x][y+1].element { //below 
-                            //     self.particles[x][y].element = Element::Nothing;
-                            //     self.particles[x][y+1].element = Element::Sand;
-                            // } else {
-                            //     if x != 0 {
-                            //         if let Element::Nothing = self.particles[x-1][y+1].element {
-                            //             self.particles[x][y].element = Element::Nothing;
-                            //             self.particles[x-1][y+1].element = Element::Sand;
-                            //         } else {
-                            //             if x + 1 < self.width {
-                            //                 if let Element::Nothing = self.particles[x+1][y+1].element {
-                            //                     self.particles[x][y].element = Element::Nothing;
-                            //                     self.particles[x+1][y+1].element = Element::Sand;
-                            //                 } 
-                            //             }
-                            //         }
-                            //     }
-                            // } 
                         }
                     },
                     Element::Water => {
@@ -198,25 +180,19 @@ impl Image {
                                 self.particles[x][y].element = Element::Nothing;
                                 self.particles[x][y+1].element = Element::Water;
                             } else {
-                                if x != 0 {
+                                if (x != 0) && (x + 1 < self.width) {
                                     if let Element::Nothing = self.particles[x-1][y+1].element {
                                         self.particles[x][y].element = Element::Nothing;
                                         self.particles[x-1][y+1].element = Element::Water;
-                                    } else {
-                                        if x + 1 < self.width {
-                                            if let Element::Nothing = self.particles[x+1][y+1].element {
-                                                self.particles[x][y].element = Element::Nothing;
-                                                self.particles[x+1][y+1].element = Element::Water;
-                                            } else {
-                                                if let Element::Nothing = self.particles[x-1][y].element {
-                                                    self.particles[x][y].element = Element::Nothing;
-                                                    self.particles[x-1][y].element = Element::Water;
-                                                } else if let Element::Nothing = self.particles[x+1][y].element {
-                                                    self.particles[x][y].element = Element::Nothing;
-                                                    self.particles[x+1][y].element = Element::Water;
-                                                }
-                                            }
-                                        }
+                                    } else if let Element::Nothing = self.particles[x+1][y+1].element {
+                                        self.particles[x][y].element = Element::Nothing;
+                                        self.particles[x+1][y+1].element = Element::Water;
+                                    } else if let Element::Nothing = self.particles[x+1][y].element {
+                                        self.particles[x][y].element = Element::Nothing;
+                                        self.particles[x+1][y].element = Element::Water;
+                                    } else if let Element::Nothing = self.particles[x-1][y].element {
+                                        self.particles[x][y].element = Element::Nothing;
+                                        self.particles[x-1][y].element = Element::Water;
                                     }
                                 }
                             } 
