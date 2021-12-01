@@ -72,10 +72,10 @@ function setupCanvas(state) {
         state.type = "water";
     });
     var i = 0;
-    const counter = document.getElementById("counter");
+    //const counter = document.getElementById("counter");
     var intervalId = window.setInterval(function(){
-        counter.textContent = i.toString();
-        i++;
+        // counter.textContent = i.toString();
+        // i++;
         image.update_particle();
         image.update_color();
         draw(state);
