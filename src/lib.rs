@@ -133,24 +133,63 @@ impl Image {
                     Element::Nothing =>{},
                     Element::Sand => {
                         if y+1 < self.height {
-                            if let Element::Nothing = self.particles[x][y+1].element { //below 
-                                self.particles[x][y].element = Element::Nothing;
-                                self.particles[x][y+1].element = Element::Sand;
-                            } else {
-                                if x != 0 {
-                                    if let Element::Nothing = self.particles[x-1][y+1].element {
-                                        self.particles[x][y].element = Element::Nothing;
-                                        self.particles[x-1][y+1].element = Element::Sand;
-                                    } else {
-                                        if x + 1 < self.width {
-                                            if let Element::Nothing = self.particles[x+1][y+1].element {
+                            match self.particles[x][y+1].element { // MATCH DOWN
+                                Element::Nothing => {
+                                    self.particles[x][y].element = Element::Nothing;
+                                    self.particles[x][y+1].element = Element::Sand;
+                                }, 
+                                Element::Sand => {
+                                    if x != 0 {
+                                        match self.particles[x-1][y+1].element {  //MATCH DOWN_LEFT
+                                            Element::Nothing => {
                                                 self.particles[x][y].element = Element::Nothing;
-                                                self.particles[x+1][y+1].element = Element::Sand;
-                                            } 
+                                                self.particles[x-1][y+1].element = Element::Sand;
+                                            }, 
+                                            Element::Sand => {
+                                                if x + 1 < self.width {
+                                                    match self.particles[x+1][y+1].element {  // MATCH DOWN_RIGHT
+                                                        Element::Nothing => {
+                                                            self.particles[x][y].element = Element::Nothing;
+                                                            self.particles[x+1][y+1].element = Element::Sand;
+                                                        }, 
+                                                        Element::Sand => {},
+                                                        Element::Water => {
+                                                            self.particles[x][y].element = Element::Water;
+                                                            self.particles[x+1][y+1].element = Element::Sand;
+                                                        },
+                                                    }
+                                                }
+                                            },
+                                            Element::Water => {
+                                                self.particles[x][y].element = Element::Water;
+                                                self.particles[x-1][y+1].element = Element::Sand;
+                                            },
                                         }
                                     }
-                                }
-                            } 
+                                },
+                                Element::Water => {
+                                    self.particles[x][y].element = Element::Water;
+                                    self.particles[x][y+1].element = Element::Sand;
+                                },
+                            }
+                            // if let Element::Nothing = self.particles[x][y+1].element { //below 
+                            //     self.particles[x][y].element = Element::Nothing;
+                            //     self.particles[x][y+1].element = Element::Sand;
+                            // } else {
+                            //     if x != 0 {
+                            //         if let Element::Nothing = self.particles[x-1][y+1].element {
+                            //             self.particles[x][y].element = Element::Nothing;
+                            //             self.particles[x-1][y+1].element = Element::Sand;
+                            //         } else {
+                            //             if x + 1 < self.width {
+                            //                 if let Element::Nothing = self.particles[x+1][y+1].element {
+                            //                     self.particles[x][y].element = Element::Nothing;
+                            //                     self.particles[x+1][y+1].element = Element::Sand;
+                            //                 } 
+                            //             }
+                            //         }
+                            //     }
+                            // } 
                         }
                     },
                     Element::Water => {
